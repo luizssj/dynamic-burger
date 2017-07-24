@@ -44,6 +44,9 @@
     <option *ngFor="let ingrediente of ingredientes" [ngValue]="ingrediente">{{ingrediente.nome}}</option>
   </select>
   <button (click)="onAddIngrediente()">Add Ingrediente</button>
-  <input type="text" placeholder="Nome novo Lanche" name="nome-lanche" [(ngModel)]="lancheSelecionado.nome">
+
+  <h4>Criar novo Lanche com combinação</h4>
+  <label for="novo-lanche">Nome Lanche:</label>
+  <input id="novo-lanche" type="text" placeholder="Nome novo Lanche" name="nome-lanche" [(ngModel)]="lancheSelecionado.nome">
   <button (click)="onNovoLanche()">Novo Lanche</button>
 </div>

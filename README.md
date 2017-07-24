@@ -1,6 +1,18 @@
 # DynamicBurger
 
+## Justificativas
 
+### Frontend
+
+Escolhi o Angular 4 pois:
+
+* O Angular 4 tem a maior comunidade dos frameworks frontend e isso ajuda na hora de tirar dúvidas, corrigir bugs e no desenvolvimento do tooling em volta do framework.
+* O Angular-CLI ajuda a configurar o projeto e gera código que repetido economizando tempo no dia-a-dia.
+
+### Backend
+
+* O principal framework é o Spring Boot, ele prioriza a convenção à configuração. Economizando bastante tempo de ramp-up do projeto e padroniza a configuração.
+* O Hibernate é utilizado para acesso ao banco de dados. Ele garante a abstração da aplicação para o banco de dados, e também aumenta a produtividade do desenvolvedor.
 
 ## Executando local
 
@@ -25,7 +37,7 @@ E navegue para `http://localhost:4200/`
 
 ### Backend
 
-É necessário ter o JDK 7 e Maven instalado. Para rodar:
+É necessário ter o JDK 8 e Maven instalado. Para rodar:
 ```sh
 cd dynamic-burger-api/
 mvn spring-boot:run

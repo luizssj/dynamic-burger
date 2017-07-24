@@ -1,0 +1,49 @@
+<h2>Lanches:</h2>
+
+<table>
+  <thead>
+    <tr>
+      <td>Nome do Lanche</td>
+      <td>Valor do Lanche</td>
+      <td>Ingredientes</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let lanche of lanches; let i = index" (click)="onLancheClicked(i)">
+      <td>{{lanche?.nome}}</td>
+      <td>{{lanche?.valor | number:'.2-2'}}</td>
+      <td>{{ getIngredientesString(lanche.ingredientes) }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="lancheSelecionado">
+  <h2>Ingredientes do Lanche Selecionado:</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <td>Nome do Ingrediente</td>
+        <td>Valor do Ingrediente</td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ingrediente of lancheSelecionado.ingredientes; let i = index">
+        <td>{{ingrediente?.nome}}</td>
+        <td>{{ingrediente?.valor | number:'.2-2'}}</td>
+      </tr>
+      <tr *ngIf="valorTotalIngredientes">
+        <td>Total com Promoção:</td>
+        <td>{{ valorTotalIngredientes }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h4>Adicionar Ingrediente</h4>
+  <select [(ngModel)]="ingredienteSelecionado">
+    <option *ngFor="let ingrediente of ingredientes" [ngValue]="ingrediente">{{ingrediente.nome}}</option>
+  </select>
+  <button (click)="onAddIngrediente()">Add Ingrediente</button>
+  <input type="text" placeholder="Nome novo Lanche" name="nome-lanche" [(ngModel)]="lancheSelecionado.nome">
+  <button (click)="onNovoLanche()">Novo Lanche</button>
+</div>

@@ -1,8 +1,6 @@
 package dynamic.service;
 
-import dynamic.dao.IngredienteDao;
 import dynamic.dao.LancheDao;
-import dynamic.domain.Ingrediente;
 import dynamic.domain.Lanche;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static dynamic.domain.Ingrediente.IngredienteEnum.*;
 
 @Service
 public class LancheService {
@@ -20,8 +20,6 @@ public class LancheService {
     @Autowired
     private IngredienteService ingredienteService;
 
-    @Autowired
-    private IngredienteDao ingredienteDao;
 
     public Collection<Lanche> getAll() {
         return this.aplicaPromocoes(lancheDao.getAll());
@@ -40,11 +38,11 @@ public class LancheService {
     public Lanche aplicaPromocoes(Lanche lanche) {
         Lanche lanchePromocao = new Lanche();
         BeanUtils.copyProperties(lanche, lanchePromocao);
-        lanchePromocao.setValor(this.somaValorIngredientes(lanchePromocao.getIngredientes()));
+        lanchePromocao.setValor(ingredienteService.somaValorIngredientes(lanchePromocao.getIngredientes()));
 
-        lanchePromocao = this.aplicaMuitaCarne(lanchePromocao);
-        lanchePromocao = this.aplicaMuitoQueijo(lanchePromocao);
-        lanchePromocao = this.aplicaLight(lanchePromocao);
+        lanchePromocao.setValor(this.aplicaPromocaoMuitoIngrediente(HAMBURGER_CARNE.getId(), lanchePromocao));
+        lanchePromocao.setValor(this.aplicaPromocaoMuitoIngrediente(QUEIJO.getId(), lanchePromocao));
+        lanchePromocao.setValor(this.aplicaLight(lanchePromocao));
 
         return lanchePromocao;
     }
@@ -58,102 +56,41 @@ public class LancheService {
         return lancheComPromocao;
     }
 
-    private Double somaValorIngredientes(Collection<Ingrediente> ingredientes) {
-        Double valor = 0.0;
-        if (ingredientes != null) {
-            for (Ingrediente ingrediente : ingredientes) {
-                valor += ingrediente.getValor();
-            }
-        }
-
-        return valor;
-    }
-
     /**
      * Light - Se o lanche tem alface e não tem bacon, ganha 10% de desconto.
      */
-    private Lanche aplicaLight(Lanche lanche) {
-        Boolean temBacon = false;
-        Boolean temAlface = false;
+    private Double aplicaLight(final Lanche lanche) {
+        Double valorLanche = lanche.getValor();
 
-        for (Ingrediente ingrediente : lanche.getIngredientes()) {
-            if (ingrediente.getNome().equals("Alface")) {
-                temAlface = true;
-            } else if (ingrediente.getNome().equals("Bacon")) {
-                temBacon = true;
-            }
+        Integer numAlface = ingredienteService.countIngredienteByName(lanche.getIngredientes(), ALFACE.getId());
+        Integer numBacon = ingredienteService.countIngredienteByName(lanche.getIngredientes(), BACON.getId());
+
+        if (numAlface > 0 && numBacon == 0) {
+            valorLanche = lanche.getValor()  * 0.9;
         }
 
-        if (temAlface && !temBacon) {
-            Lanche lancheLight = new Lanche();
-            BeanUtils.copyProperties(lanche, lancheLight);
-            lancheLight.setValor(lancheLight.getValor()  * 0.9);
-
-            return lancheLight;
-        }
-
-        return lanche;
+        return valorLanche;
     }
 
     /**
-     *      Muita carne - A cada 3 porções de carne o cliente só paga 2. Se o lanche tiver 6 porções, ocliente pagará 4. Assim por diante...
+     * Aplica promoçao de Muito Ingrediente
+     * A cada 3 porções de carne o cliente só paga 2. Se o lanche tiver 6 porções, ocliente pagará 4. Assim por diante...
+     *
+     * @param idIngrediente
+     * @param lanche
+     * @return
      */
-    private Lanche aplicaMuitaCarne(Lanche lanche) {
-        Lanche lancheMuitaCarne = new Lanche();
-        BeanUtils.copyProperties(lanche, lancheMuitaCarne);
+    private Double aplicaPromocaoMuitoIngrediente(Long idIngrediente, Lanche lanche) {
+        Double valorLanche = lanche.getValor();
 
-        Integer numCarne = 0;
-        for (Ingrediente ingrediente : lanche.getIngredientes()) {
-            // id: Hanburger de Carne
-            if (ingrediente.getId().equals(3L)) {
-                numCarne++;
-            }
+        Integer numIngrediente = ingredienteService.countIngredienteByName(lanche.getIngredientes(), idIngrediente);
+        Integer numIngredienteRemover = numIngrediente / 3;
+
+        if (numIngredienteRemover >= 1) {
+            Double valorCarne = ingredienteService.getById(idIngrediente).getValor();
+            valorLanche = lanche.getValor() - valorCarne * numIngredienteRemover;
         }
 
-        Integer numCarneRemover = 0;
-        if (numCarne / 3 > 0) {
-            numCarneRemover = (numCarne / 3);
-        }
-
-        if (numCarneRemover > 0) {
-            Ingrediente ingrediente = ingredienteService.getById(3L);
-            Double valorCarne = ingrediente.getValor();
-            lancheMuitaCarne.setValor(lancheMuitaCarne.getValor() - valorCarne * numCarneRemover);
-
-            return lancheMuitaCarne;
-        }
-
-        return lancheMuitaCarne;
-    }
-
-    /**
-     *      Muito queijo - A cada 3 porções de queijo o cliente só paga 2. Se o lanche tiver 6 porções, ocliente pagará 4. Assim por diante...
-     */
-    private Lanche aplicaMuitoQueijo(Lanche lanche) {
-        Lanche lancheMuitoQueijo = new Lanche();
-        BeanUtils.copyProperties(lanche, lancheMuitoQueijo);
-
-        Integer numQueijo = 0;
-        for (Ingrediente ingrediente : lanche.getIngredientes()) {
-            // id: Queijo
-            if (ingrediente.getId().equals(5L)) {
-                numQueijo++;
-            }
-        }
-
-        Integer numQueijoRemover = 0;
-        if (numQueijo / 3 > 0) {
-            numQueijoRemover = (numQueijo / 3);
-        }
-
-        if (numQueijoRemover > 0) {
-            Ingrediente ingrediente = ingredienteService.getById(5L);
-            Double valorQueijo = ingrediente.getValor();
-            lancheMuitoQueijo.setValor(lancheMuitoQueijo.getValor() - valorQueijo * numQueijoRemover);
-
-            return lancheMuitoQueijo;
-        }
-
-        return lancheMuitoQueijo;
+        return valorLanche;
     }
 }

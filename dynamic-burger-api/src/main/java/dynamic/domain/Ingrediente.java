@@ -11,6 +11,21 @@ import java.util.Set;
 @Table(name="INGREDIENTE")
 public class Ingrediente {
 
+  //TODO(luiz): mapear enum com banco de dados
+  public enum IngredienteEnum {
+    ALFACE(1L), BACON(2L), HAMBURGER_CARNE(3L), OVO(4L), QUEIJO(5L);
+
+    private Long id;
+
+    IngredienteEnum(Long id) {
+      this.id = id;
+    }
+
+    public Long getId() {
+      return id;
+    }
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "ingrediente_id", unique = true, nullable = false)
@@ -21,9 +36,6 @@ public class Ingrediente {
 
   @Column(unique = true, nullable = false, precision = 10, scale = 2)
   private Double valor;
-
-//  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "ingredientes")
-//  private Set<Lanche> lanches;
 
   public Ingrediente() {
   }

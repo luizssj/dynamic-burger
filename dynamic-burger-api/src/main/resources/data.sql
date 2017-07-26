@@ -28,6 +28,9 @@ insert into LANCHE_INGREDIENTE values (4, 3);
 insert into LANCHE_INGREDIENTE values (4, 4);
 insert into LANCHE_INGREDIENTE values (4, 5);
 
+
+-- TODO(luiz): fazer teste para os casos abaixo
+
 --insert into lanche (nome) values ('lancheLight');
 --insert into LANCHE_INGREDIENTE values (1, 1);
 --insert into LANCHE_INGREDIENTE values (1, 3);
@@ -70,7 +73,7 @@ insert into LANCHE_INGREDIENTE values (4, 5);
 --insert into LANCHE_INGREDIENTE values (6, 3);
 --insert into LANCHE_INGREDIENTE values (6, 5);
 --insert into LANCHE_INGREDIENTE values (6, 5);
-
+--
 --insert into lanche (nome) values ('X-Bacon');
 ----Bacon, hambúrguer de carne e queijo
 --insert into LANCHE_INGREDIENTE values (1, 2);

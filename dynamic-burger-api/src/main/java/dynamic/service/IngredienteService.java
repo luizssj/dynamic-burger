@@ -20,4 +20,32 @@ public class IngredienteService {
     public Ingrediente getById(Long id) {
         return ingredienteDao.getById(id);
     }
+
+    public Double somaValorIngredientes(Collection<Ingrediente> ingredientes) {
+        Double valor = 0.0;
+        if (ingredientes != null) {
+            for (Ingrediente ingrediente : ingredientes) {
+                valor += ingrediente.getValor();
+            }
+        }
+
+        return valor;
+    }
+
+    /**
+     * Conta o número de {@param ingredientes} com o id em {@param idToCount}
+     * @param ingredientes
+     * @param idToCount
+     * @return número de {@param ingredientes}
+     */
+    public Integer countIngredienteByName(final Collection<Ingrediente> ingredientes, final Long idToCount) {
+        Integer numIngredientes = 0;
+        for (Ingrediente ingrediente : ingredientes) {
+            if (ingrediente.getId().equals(idToCount)) {
+                numIngredientes++;
+            }
+        }
+
+        return numIngredientes;
+    }
 }

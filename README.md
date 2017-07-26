@@ -30,6 +30,7 @@ E então, para subir o servidor de desenvolvimento:
 
 ```sh
 cd dynamic-burger-web/
+npm install
 ng serve
 ```
 
@@ -44,3 +45,19 @@ mvn spring-boot:run
 ```
 
 ## Executando Docker
+
+### Frontend
+É necessário ter instalado node 6+ e Angular CLI. E então executar o `run.sh` dentro da pasta docker.
+
+```sh
+cd dynamic-burger-web/docker/
+./run.sh
+```
+
+### Backend
+É necessário ter o JDK 8 e Maven instalado. E então executar o `run.sh` dentro da pasta docker.
+
+```sh
+cd dynamic-burger-api/docker/
+./run.sh
+```
